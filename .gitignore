@@ -134,4 +134,4 @@ dmypy.json
 .pyre/
 
 # API Keys
-./game_simulation/.env.*
+game_simulation/.env.*
