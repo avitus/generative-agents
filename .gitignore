@@ -1,3 +1,6 @@
+game_simulation/.env.template
+game_simulation/simulation_log.txt
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -133,5 +136,3 @@ dmypy.json
 # Pyre type checker
 .pyre/
 
-# API Keys
-game_simulation/.env.*
