@@ -10,8 +10,6 @@ load_dotenv()
 # Get OpenAI API key from environment variables
 openai.api_key = os.getenv("OPENAI_API_KEY")
 
-
-
 def generate(prompt, use_openai=True):
     """
     Generates a text completion for a given prompt using either the OpenAI GPT-3 API or the Hugging Face GPT-3 model.
@@ -24,7 +22,7 @@ def generate(prompt, use_openai=True):
     - str: The generated text completion.
     """
     if use_openai:
-        model_engine = "text-davinci-002"
+        model_engine = "text-davinci-003"
         response = openai.Completion.create(
             engine=model_engine,
             prompt=prompt,
