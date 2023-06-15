@@ -26,4 +26,4 @@ We expect that with the advent of the next generation of instruction-tuned model
 
 * Summarize agent decisions as emojis. (WIP)
 * Create a family of questions to compress agent contexts better.
-* Check if the agent contexts are compressed well with an another layer of prompts.
+* Check if the agent contexts are compressed well with another layer of prompts.
