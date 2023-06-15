@@ -1,5 +1,5 @@
 import random
-from utils.text_generation import generate, get_rating
+from utils.text_generation import generate, get_rating, emojii_repr
 import networkx as nx
 
 class Agent:
@@ -68,6 +68,7 @@ class Agent:
 
         prompt = "You are {}. The following is your description: {} You just woke up. What is your goal for today? Write it down on an hourly basis, starting at {}:00. Write only one or two very short sentences. Be very brief. Use at most 75 words.".format(self.name, self.description, str(global_time))
         self.plans = generate(prompt_meta.format(prompt), self.use_openai)
+        
     
     def execute_action(self, other_agents, location, global_time, town_areas, prompt_meta):
 
@@ -101,7 +102,8 @@ class Agent:
         
         prompt += "What do you do in the next hour? Use at most 50 words to explain."
         action = generate(prompt_meta.format(prompt), self.use_openai)
-        return action
+        emo_action = emojii_repr(action)
+        return action + emo_action
     
     def update_memories(self, other_agents, global_time, action_results):
         

@@ -1,0 +1,89 @@
+import pygame
+from pygame.locals import *
+import os
+import openai
+
+# Initialize Pygame
+pygame.init()
+
+# Set up the game window
+width, height = 800, 600  # Adjust these values as per your requirements
+screen = pygame.display.set_mode((width, height))
+grass = (152, 251, 152)  # RGB value for light green color
+screen.fill(grass)  # Fill the screen with light green color
+pygame.display.flip()
+pygame.display.set_caption("Phandalin")
+
+class Location(pygame.sprite.Sprite):
+    '''adds an building to the map'''
+    def __init__(self, coords, img):
+        super(Location, self).__init__()
+        self.coords = coords
+        self.surf = pygame.image.load(img).convert()
+        self.surf.set_colorkey((255, 255, 255), RLEACCEL)
+        self.rect = self.surf.get_rect()
+        screen.blit(self.surf, self.coords)
+        pygame.display.flip()  
+        
+
+    def get_coord(self):
+        '''returns the coordinates'''
+        return self.coords
+
+class Agent(pygame.sprite.Sprite):
+    '''an agent'''
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+def emojii_repr(text):
+    '''takes a str and makes an emojii representation of it
+        Args: 
+        text -- str'''
+    openai.api_key = os.getenv("OPENAI_API_KEY")
+
+    prompt = "colored emojii representation of" + text
+    response = openai.Completion.create(
+        engine="text-davinci-003",  # Specify the GPT model
+        prompt=prompt,
+        max_tokens=5,  # Adjust the desired length of the generated response
+        n = 1, # Adjust the number of responses to receive
+        stop=None,  # Specify a stopping condition, if desired
+    )
+
+    # Extract the generated response from the API response
+    generated_text = response.choices[0].text.strip()
+
+    # Print the generated response
+    print(generated_text)
+
+
+emojii_repr("writing in journal")
+
+# Set up the game loop
+running = True
+while running:
+    for event in pygame.event.get():
+        if event.type == QUIT:
+            running = False
+    pygame.display.flip()  
+
+        
+
+ 
+
+# Clean up
+pygame.quit()

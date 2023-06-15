@@ -71,3 +71,24 @@ def summarize_simulation(log_output):
     prompt = f"Summarize the simulation loop:\n\n{log_output}"
     response = generate(prompt)
     return response
+
+# Returns an emojii representation of a str
+def emojii_repr(text):
+    openai.api_key = os.getenv("OPENAI_API_KEY")
+
+    prompt = "colored emojii representation of" + text
+    response = openai.Completion.create(
+        engine="text-davinci-003",  # Specify the GPT model
+        prompt=prompt,
+        max_tokens=5,  # Adjust the desired length of the generated response
+        n = 1, # Adjust the number of responses to receive
+        stop=None,  # Specify a stopping condition, if desired
+    )
+
+    # Extract the generated response from the API response
+    generated_text = response.choices[0].text.strip()
+
+    # Return the generated response
+    return generated_text
+
+
