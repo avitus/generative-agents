@@ -66,7 +66,7 @@ class Agent:
             The prompt used to generate the plan.
         """
 
-        prompt = "You are {}. The following is your description: {} You just woke up. What is your goal for today? Write it down in an hourly basis, starting at {}:00. Write only one or two very short sentences. Be very brief. Use at most 50 words.".format(self.name, self.description, str(global_time))
+        prompt = "You are {}. The following is your description: {} You just woke up. What is your goal for today? Write it down on an hourly basis, starting at {}:00. Write only one or two very short sentences. Be very brief. Use at most 75 words.".format(self.name, self.description, str(global_time))
         self.plans = generate(prompt_meta.format(prompt), self.use_openai)
     
     def execute_action(self, other_agents, location, global_time, town_areas, prompt_meta):
@@ -99,7 +99,7 @@ class Agent:
         people_description = [f"{agent.name}: {agent.description}" for agent in other_agents if agent.location == location.name]
         prompt += ' You know the following about people: ' + '. '.join(people_description)
         
-        prompt += "What do you do in the next hour? Use at most 10 words to explain."
+        prompt += "What do you do in the next hour? Use at most 50 words to explain."
         action = generate(prompt_meta.format(prompt), self.use_openai)
         return action
     
@@ -233,3 +233,20 @@ class Agent:
 
         return self.location
 
+    def diary_entry(self, entry_type, log=True, display=True, entry=""):
+
+        diary_name = 'logs/' + self.name.replace(" ", "_") + '.txt'
+
+        if entry_type == "Plans":
+            if log:
+                with open(diary_name , 'a') as f:
+                    f.write(f"{self.name} plans: {self.plans}\n")
+            if display:
+                print(f"{self.name} plans: {self.plans}")
+
+        if entry_type == "Action":
+            if log:
+                with open(diary_name , 'a') as f:
+                    f.write(f"{self.name} plans: {entry}\n")
+            if display:
+                print(f"{self.name} action: {entry}")

@@ -42,6 +42,9 @@ class Locations:
     get_location(name):
         Returns the Location object with the given name.
     
+    show_map()
+        Display the map
+
     __str__():
         Returns a string representation of the collection of locations.
     """
@@ -54,6 +57,13 @@ class Locations:
 
     def get_location(self, name):
         return self.locations.get(name)
+    
+    def show_map(self, log=True, display=True):
+        if display:
+            print(str(self) + "\n")
+        if log:
+            with open('simulation_log.txt', 'w') as f:
+                f.write(str(self) + "\n")
 
     def __str__(self):
         return '\n'.join([str(location) for location in self.locations.values()])

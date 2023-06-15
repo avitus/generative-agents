@@ -1,29 +1,35 @@
+import torch
 import json
 import networkx as nx
 from agents.agent import Agent
 from locations.locations import Locations
 from utils.text_generation import summarize_simulation
 
+print("Using Pytorch version: " + torch.__version__)
+print("CUDA available?: " + str(torch.cuda.is_available()))
+print("CUDA version: {}".format(torch.version.cuda))
+# print("Total GPU memory: " + str(torch.cuda.get_device_properties(device).total_memory))
+
 # Set default value for prompt_meta if not defined elsewhere
 prompt_meta = '### Instruction:\n{}\n### Response:'
 
 # Initialize global time and simulation variables
-global_time = 0
+global_time = 1
 repeats = 5
 
-log_locations = False
+log_locations = True
 log_actions = True
-log_plans = False
-log_ratings = False
-log_memories = False
+log_plans = True
+log_ratings = True
+log_memories = True
 
 print_locations = True
 print_actions = True
 print_plans = True
 print_ratings = True
-print_memories = False
+print_memories = True
 
-use_openai=True
+use_openai = False
 
 # Start simulation loop
 whole_simulation_output = ""
@@ -52,7 +58,6 @@ world_graph.add_edge(list(town_areas.keys())[0], last_town_area)
 agents = []
 locations = Locations()
 
-
 for name, description in town_people.items():
     starting_location = description['starting_location']
     agents.append(Agent(name, description['description'], starting_location, world_graph, use_openai))
@@ -61,34 +66,23 @@ for name, description in town_areas.items():
     locations.add_location(name, description)
 
 for repeat in range(repeats):
-    #log_output for one repeat
+
     log_output = ""
 
+    # Show the map
     print(f"====================== REPEAT {repeat} ======================\n")
-    log_output += f"====================== REPEAT {repeat} ======================\n"
-    if log_locations:
-        log_output += f"=== LOCATIONS AT START OF REPEAT {repeat} ===\n"
-        log_output += str(locations) + "\n"
-        if print_locations:
-            print(f"=== LOCATIONS AT START OF REPEAT {repeat} ===")
-            print(str(locations) + "\n")
+    locations.show_map(print_locations, log_locations)
     
     # Plan actions for each agent
     for agent in agents:
         agent.plan(global_time, prompt_meta)
-        if log_plans:
-            log_output += f"{agent.name} plans: {agent.plans}\n"
-            if print_plans:
-                print(f"{agent.name} plans: {agent.plans}")
+        agent.diary_entry("Plans", print_plans, log_plans)
     
     # Execute planned actions and update memories
     for agent in agents:
         # Execute action
         action = agent.execute_action(agents, locations.get_location(agent.location), global_time, town_areas, prompt_meta)
-        if log_actions:
-            log_output += f"{agent.name} action: {action}\n"
-            if print_actions:
-                print(f"{agent.name} action: {action}")
+        agent.diary_entry("Action", print_actions, log_actions, action)
 
         # Update memories
         for other_agent in agents:

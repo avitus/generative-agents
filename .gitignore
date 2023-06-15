@@ -1,6 +1,9 @@
 game_simulation/.env.template
 game_simulation/simulation_log.txt
 
+# Logs file
+logs/
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
