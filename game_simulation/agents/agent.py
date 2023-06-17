@@ -47,6 +47,7 @@ class Agent:
         self.memory_ratings = []
         self.memories = []
         self.compressed_memories = []
+        self.inspiration = ""
         self.plans = ""
         self.world_graph = world_graph
         self.use_openai = use_openai
@@ -96,9 +97,15 @@ class Agent:
         
         prompt = "You are {}. Your plans are: {}. You are currently in {} with the following description: {}. It is currently {}:00. The following people are in this area: {}. You can interact with them.".format(self.name, self.plans, location.name, town_areas[location.name], str(global_time), ', '.join(people))
         
+        # Get a description of each person in the agent's current location
         people_description = [f"{agent.name}: {agent.description}" for agent in other_agents if agent.location == location.name]
         prompt += ' You know the following about people: ' + '. '.join(people_description)
         
+        # Add in the inspiration from the user input (if any)
+        if agent.inspiration != "":
+            prompt += ' You were recently inspired with the following idea: ' + agent.inspiration + '. '
+
+        # Get the plan for the next hour
         prompt += "What do you do in the next hour? Use at most 50 words to explain."
         action = generate(prompt_meta.format(prompt), self.use_openai)
         return action
