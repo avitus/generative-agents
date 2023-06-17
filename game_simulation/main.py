@@ -25,11 +25,11 @@ log_memories = True
 
 print_locations = True
 print_actions = True
-print_plans = True
-print_ratings = True
-print_memories = True
+print_plans = False
+print_ratings = False
+print_memories = False
 
-use_openai = False
+use_openai = True
 
 # Start simulation loop
 whole_simulation_output = ""
@@ -125,6 +125,9 @@ for repeat in range(repeats):
             print(f"=== UPDATED LOCATIONS AT TIME {global_time} FOR {agent.name}===\n")
             print(f"{agent.name} moved from {old_location} to {new_location_name}\n")
 
+   
+    # get user input here
+   
     print(f"----------------------- SUMMARY FOR REPEAT {repeat} -----------------------")
 
     print(summarize_simulation(log_output=log_output))
@@ -133,6 +136,8 @@ for repeat in range(repeats):
 
     # Increment time
     global_time += 1
+
+    
 
 # Write log output to file
 with open('simulation_log.txt', 'w') as f:

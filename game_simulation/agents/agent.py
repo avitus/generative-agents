@@ -237,7 +237,7 @@ class Agent:
 
     def diary_entry(self, entry_type, log=True, display=True, entry=""):
 
-        diary_name = 'logs/' + self.name.replace(" ", "_") + '.txt'
+        diary_name = 'game_simulation/logs/' + self.name.replace(" ", "_") + '.txt'
 
         if entry_type == "Plans":
             if log:
