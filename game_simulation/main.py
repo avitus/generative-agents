@@ -4,6 +4,7 @@ import networkx as nx
 from agents.agent import Agent
 from locations.locations import Locations
 from utils.text_generation import summarize_simulation
+from utils.user_input import inspire_agent
 
 print("Using Pytorch version: " + torch.__version__)
 print("CUDA available?: " + str(torch.cuda.is_available()))
@@ -73,13 +74,18 @@ for repeat in range(repeats):
     print(f"====================== REPEAT {repeat} ======================\n")
     locations.show_map(print_locations, log_locations)
     
-    # Plan actions for each agent
+    # Prompt from user to a single agent. We call this inspiration
+    agent_to_inspire = inspire_agent(agents)
+    print(agent_to_inspire)
+
+    # Each agent plans actions
     for agent in agents:
         agent.plan(global_time, prompt_meta)
         agent.diary_entry("Plans", print_plans, log_plans)
     
     # Execute planned actions and update memories
     for agent in agents:
+
         # Execute action
         action = agent.execute_action(agents, locations.get_location(agent.location), global_time, town_areas, prompt_meta)
         agent.diary_entry("Action", print_actions, log_actions, action)
