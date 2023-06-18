@@ -249,13 +249,13 @@ class Agent:
         if entry_type == "Plans":
             if log:
                 with open(diary_name , 'a') as f:
-                    f.write(f"{self.name} plans: {self.plans}\n")
+                    f.write(f"{self.name}'s Plans:\n{self.plans}\n")
             if display:
-                print(f"{self.name} plans: {self.plans}")
+                print(f"{self.name}'s Plans:\n{self.plans}")
 
         if entry_type == "Action":
             if log:
                 with open(diary_name , 'a') as f:
-                    f.write(f"{self.name} plans: {entry}\n")
+                    f.write(f"{self.name}'s Actions:\n{entry}\n")
             if display:
-                print(f"{self.name} action: {entry}")
+                print(f"{self.name}'s Actions:\n{entry}\n")
