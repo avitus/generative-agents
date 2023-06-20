@@ -262,8 +262,7 @@ class Agent:
                 with open(diary_name , 'a') as f:
                     f.write(f"{self.name}'s Actions:\n{entry}\n")
             if display:
-<<<<<<< HEAD
-                print(f"{self.name} action: {entry}")
+                print(f"{self.name}'s Actions:\n{entry}\n")
 
     def conversation(self, agent):
         '''self initiates the conversation'''
@@ -281,6 +280,3 @@ class Agent:
             # generate a response for self 
             # prompt openai to return whether this ends the conversation, and quit the loop if True
 
-=======
-                print(f"{self.name}'s Actions:\n{entry}\n")
->>>>>>> 0d157ac1abffb5a8909880f69103cd1747af9ec1
