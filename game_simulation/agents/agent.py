@@ -116,6 +116,19 @@ class Agent:
         emo_action = emojii_repr(action)
         return action + emo_action
     
+    # This corresponds to the memory stream
+    # Recency: exponential decay function of 0.99 over number of hourse since memory was last accessed (formed?)
+    # Importance: directly ask LLM to rate memory from 1-10
+    # Relevance: cosine similarity between a) memory's embedding vector and b) query memory's embedding vector
+    # Retrieval function: score = (a1 * recency) + (a2 * importance) + (a3 * relevance)
+
+    # Memory stream: 
+    # - creation timestamp
+    # - most recently accessed timestamp
+    # - object string for the memory
+    # def form_short_term_memory(self, date, time, person, action):
+
+
     def update_memories(self, other_agents, global_time, action_results):
         
         """
@@ -246,6 +259,7 @@ class Agent:
 
         return self.location
 
+    # TODO: Maybe we don't need a different type of entry for plans, actions, memories, etc.
     def diary_entry(self, entry_type, log=True, display=True, entry=""):
 
         diary_name = 'logs/' + self.name.replace(" ", "_") + '.txt'
@@ -255,7 +269,7 @@ class Agent:
                 with open(diary_name , 'a') as f:
                     f.write(f"{self.name}'s Plans:\n{self.plans}\n")
             if display:
-                print(f"{self.name}'s Plans:\n{self.plans}")
+                print(f"{self.name}'s Plans:\n{self.plans}\n")
 
         if entry_type == "Action":
             if log:
@@ -263,6 +277,14 @@ class Agent:
                     f.write(f"{self.name}'s Actions:\n{entry}\n")
             if display:
                 print(f"{self.name}'s Actions:\n{entry}\n")
+
+        if entry_type == "Memory":
+            if log:
+                with open(diary_name , 'a') as f:
+                    f.write(f"{self.name}'s Memory:\n{entry}\n")
+            if display:
+                print(f"{self.name}'s Memory:\n{entry}\n")
+
 
     def conversation(self, agent):
         '''self initiates the conversation'''

@@ -16,8 +16,9 @@ print("CUDA version: {}".format(torch.version.cuda))
 prompt_meta = '### Instruction:\n{}\n### Response:'
 
 # Initialize global time and simulation variables
-global_time = 5
-repeats = 5
+global_day  = 0   # number of days since the simulation began
+global_time = 7   # current hour of the day, 0-23
+hours_of_simulation = 12
 
 log_locations = True
 log_actions = True
@@ -27,9 +28,9 @@ log_memories = True
 
 print_locations = True
 print_actions = True
-print_plans = False
-print_ratings = False
-print_memories = False
+print_plans = True
+print_ratings = True
+print_memories = True
 
 use_openai = True 
 
@@ -74,12 +75,12 @@ for name, description in town_people.items():
 for name, description in town_areas.items():
     locations.add_location(name, description)
 
-for repeat in range(repeats):
+for game_hour in range(global_time, global_time+hours_of_simulation):
 
     log_output = ""
 
     # Show the map
-    print(f"====================== REPEAT {repeat} ======================\n")
+    print(f"====================== REPEAT {game_hour} ======================\n")
     locations.show_map(print_locations, log_locations)
     
     # Prompt from user to a single agent. We call this inspiration
@@ -88,20 +89,25 @@ for repeat in range(repeats):
     # Each agent plans actions
     for agent in agents:
         agent.plan(global_time, prompt_meta)
-        agent.diary_entry("Plans", print_plans, log_plans)
+        agent.diary_entry("Plans", log_plans, print_plans)
     
     # Execute planned actions and update memories
     for agent in agents:
 
         # Execute action
         action = agent.execute_action(agents, locations.get_location(agent.location), global_time, town_areas, prompt_meta)
-        agent.diary_entry("Action", print_actions, log_actions, action)
+        agent.diary_entry("Action", log_actions, print_actions, action)
 
-        # Update memories
+        # Update memories: all other agents remember what the agent does
         for other_agent in agents:
             if other_agent != agent:
+
+                # other_agent.form_sort_term_memory(global_day, global_time, agent, action )
+                # other_agent.diary_entry("Memory", global_day, global_time, agent, action )
+
                 memory = f'[Time: {global_time}. Person: {agent.name}. Memory: {action}]'
                 other_agent.memories.append(memory)
+                      
                 if log_memories:
                     log_output += f"{other_agent.name} remembers: {memory}\n"
                     if print_memories:
@@ -114,7 +120,7 @@ for repeat in range(repeats):
             if log_ratings:
                 log_output += f"{agent.name} memory ratings: {agent.memory_ratings}\n"
                 if print_ratings:
-                    print(f"{agent.name} memory ratings: {agent.memory_ratings}")
+                    print(f"{agent.name} memory ratings: {agent.memory_ratings}\n")
 
     # Rate locations and determine where agents will go next
     for agent in agents:
@@ -137,11 +143,8 @@ for repeat in range(repeats):
         if print_ratings:
             print(f"=== UPDATED LOCATIONS AT TIME {global_time} FOR {agent.name}===\n")
             print(f"{agent.name} moved from {old_location} to {new_location_name}\n")
-
    
-    # get user input here
-   
-    print(f"----------------------- SUMMARY FOR REPEAT {repeat} -----------------------")
+    print(f"----------------------- SUMMARY FOR REPEAT {game_hour} -----------------------")
 
     print(summarize_simulation(log_output=log_output))
 
@@ -150,7 +153,6 @@ for repeat in range(repeats):
     # Increment time
     global_time += 1
 
-    
 
 # Write log output to file
 with open('simulation_log.txt', 'w') as f:
