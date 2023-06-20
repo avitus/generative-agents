@@ -1,5 +1,6 @@
 import torch
 import json
+import matplotlib.pyplot as plt
 import networkx as nx
 from agents.agent import Agent
 from locations.locations import Locations
@@ -15,7 +16,7 @@ print("CUDA version: {}".format(torch.version.cuda))
 prompt_meta = '### Instruction:\n{}\n### Response:'
 
 # Initialize global time and simulation variables
-global_time = 1
+global_time = 5
 repeats = 5
 
 log_locations = True
@@ -30,7 +31,7 @@ print_plans = False
 print_ratings = False
 print_memories = False
 
-use_openai = True
+use_openai = True 
 
 # Start simulation loop
 whole_simulation_output = ""
@@ -52,8 +53,15 @@ for town_area in town_areas.keys():
         world_graph.add_edge(town_area, last_town_area)
     last_town_area = town_area
 
+
 # Add the edge between the first and the last town areas to complete the cycle
 world_graph.add_edge(list(town_areas.keys())[0], last_town_area)
+
+# Draw the graph
+nx.draw(world_graph, with_labels=True, node_color='lightblue', edge_color='gray')
+
+# Show the plot
+plt.show()
 
 # Initialize agents and locations
 agents = []
@@ -76,7 +84,6 @@ for repeat in range(repeats):
     
     # Prompt from user to a single agent. We call this inspiration
     agent_to_inspire = inspire_agent(agents)
-    print(agent_to_inspire)
 
     # Each agent plans actions
     for agent in agents:

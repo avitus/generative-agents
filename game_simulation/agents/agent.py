@@ -47,7 +47,7 @@ class Agent:
         self.memory_ratings = []
         self.memories = []
         self.compressed_memories = []
-        self.inspiration = ""
+        self.inspiration = "None"
         self.plans = ""
         self.world_graph = world_graph
         self.use_openai = use_openai
@@ -66,8 +66,11 @@ class Agent:
         prompt_meta : str
             The prompt used to generate the plan.
         """
+        if self.inspiration == "None":
+            prompt = "You are {}. The following is your description: {} You just woke up. What is your goal for today? Write it down on an hourly basis, starting at {}:00. Write only one or two very short sentences. Be very brief. Use at most 75 words.".format(self.name, self.description, str(global_time))
+        else:  
+            prompt = "You are {}. The following is your description: {} You just woke up. You must " + self.inspiration + ". What is your goal for today? Write it down on an hourly basis, starting at {}:00. Write only one or two very short sentences. Be very brief. Use at most 75 words.".format(self.name, self.description, str(global_time))
 
-        prompt = "You are {}. The following is your description: {} You just woke up. What is your goal for today? Write it down on an hourly basis, starting at {}:00. Write only one or two very short sentences. Be very brief. Use at most 75 words.".format(self.name, self.description, str(global_time))
         self.plans = generate(prompt_meta.format(prompt), self.use_openai)
         
     
@@ -96,18 +99,19 @@ class Agent:
 
         people = [agent.name for agent in other_agents if agent.location == location]
         
-        prompt = "You are {}. Your plans are: {}. You are currently in {} with the following description: {}. It is currently {}:00. The following people are in this area: {}. You can interact with them.".format(self.name, self.plans, location.name, town_areas[location.name], str(global_time), ', '.join(people))
+        prompt = "You are {}. Your plans are: {}. You are currently in {} with the following description: {}. It is currently {}:00. ".format(self.name, self.plans, location.name, town_areas[location.name], str(global_time))
         
         # Get a description of each person in the agent's current location
         people_description = [f"{agent.name}: {agent.description}" for agent in other_agents if agent.location == location.name]
-        prompt += ' You know the following about people: ' + '. '.join(people_description)
-        
-        # Add in the inspiration from the user input (if any)
-        if agent.inspiration != "":
-            prompt += ' You were recently inspired with the following idea: ' + agent.inspiration + '. '
+        talk = generate(prompt_meta.format('The following people are in this area: ' + ' .'.join(people_description) + '. You can interact with them. You know the following about people: ' + '. '.join(people_description) + '. Do you want to talk to them? Respond with the agents name if you do, and "None" if you dont want to talk to anyone.'), self.use_openai)
+        self.conversation(talk)
 
-        # Get the plan for the next hour
-        prompt += "What do you do in the next hour? Use at most 50 words to explain."
+        # Add in the inspiration from the user input (if any)
+        if self.inspiration != "None":
+            prompt += ' You were recently inspired with the following idea: ' + self.inspiration + '. '
+
+        # Get the action
+        prompt += "What do you want to do?"
         action = generate(prompt_meta.format(prompt), self.use_openai)
         emo_action = emojii_repr(action)
         return action + emo_action
@@ -244,7 +248,7 @@ class Agent:
 
     def diary_entry(self, entry_type, log=True, display=True, entry=""):
 
-        diary_name = 'game_simulation/logs/' + self.name.replace(" ", "_") + '.txt'
+        diary_name = 'logs/' + self.name.replace(" ", "_") + '.txt'
 
         if entry_type == "Plans":
             if log:
@@ -259,3 +263,20 @@ class Agent:
                     f.write(f"{self.name} plans: {entry}\n")
             if display:
                 print(f"{self.name} action: {entry}")
+
+    def conversation(self, agent):
+        '''self initiates the conversation'''
+        conversation_not_finished = True
+        # load memories about agent and assign a variable to them
+        # prompt openai to have self greet that agent based on retrieved memories
+        # print the output
+        while conversation_not_finished:
+            print(self.memories)
+            conversation_not_finished = False
+            # agent load memories about self and assign a variable to them
+            # give agent the previous thing said and assign a variable to that
+            # generate a response for agent given the last thing said and memories
+            # prompt openai to return whether this ends the conversation, and quit the loop if True
+            # generate a response for self 
+            # prompt openai to return whether this ends the conversation, and quit the loop if True
+
