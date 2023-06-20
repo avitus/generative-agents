@@ -1,11 +1,21 @@
+from inputimeout import inputimeout, TimeoutOccurred
+
 def inspire_agent(agents):
+
+    # List all the agents
     for index, agent in enumerate(agents):
         print(f"{index}: {agent.name}")
-    agent = input("Who do you want to inspire? ")
-    if agent == 'None':
+
+    # Who needs inspiration. Allow 5 seconds for a selection
+    try:
+        agent = inputimeout(prompt='Who do you want to inspire? : ', timeout=5)
+    except TimeoutOccurred:
         return None
-    else:
-        agent = agents[int(agent)]
-        agent.inspiration = input("What do want this agent to do? ")
-        return agent
+
+    # Give specific inspiration
+    agent = agents[int(agent)]
+    agent.inspiration = input("What do want this agent to do? : ")
+    return agent
+
+
     
