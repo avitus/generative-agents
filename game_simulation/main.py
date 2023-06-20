@@ -105,7 +105,7 @@ for repeat in range(repeats):
                 if log_memories:
                     log_output += f"{other_agent.name} remembers: {memory}\n"
                     if print_memories:
-                        print(f"{other_agent.name} remembers: {memory}")
+                        print(f"{other_agent.name} remembers: {memory}\n")
 
         # Compress and rate memories for each agent
         for agent in agents:

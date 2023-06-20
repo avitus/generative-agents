@@ -253,15 +253,16 @@ class Agent:
         if entry_type == "Plans":
             if log:
                 with open(diary_name , 'a') as f:
-                    f.write(f"{self.name} plans: {self.plans}\n")
+                    f.write(f"{self.name}'s Plans:\n{self.plans}\n")
             if display:
-                print(f"{self.name} plans: {self.plans}")
+                print(f"{self.name}'s Plans:\n{self.plans}")
 
         if entry_type == "Action":
             if log:
                 with open(diary_name , 'a') as f:
-                    f.write(f"{self.name} plans: {entry}\n")
+                    f.write(f"{self.name}'s Actions:\n{entry}\n")
             if display:
+<<<<<<< HEAD
                 print(f"{self.name} action: {entry}")
 
     def conversation(self, agent):
@@ -280,3 +281,6 @@ class Agent:
             # generate a response for self 
             # prompt openai to return whether this ends the conversation, and quit the loop if True
 
+=======
+                print(f"{self.name}'s Actions:\n{entry}\n")
+>>>>>>> 0d157ac1abffb5a8909880f69103cd1747af9ec1
