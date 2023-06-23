@@ -3,6 +3,7 @@ import re
 import os
 from dotenv import load_dotenv
 from transformers import pipeline
+import baseten
 
 # Load environment variables from .env file
 load_dotenv()
@@ -36,19 +37,34 @@ def generate(prompt, use_openai=True):
         return message.strip()
 
     else:
+
+        # Falcon7 model running on BaseTen
+        # {'data': {'generated_text': "### Instruction: You are Nellie Stonehill. ### Response: 7:00: I'm awake and going to breakfast."}}
+        model = baseten.deployed_model_id('XP9veEq')
+        output = model.predict({
+            "prompt": prompt,
+            "do_sample": True,
+            "max_new_tokens": 300,
+        })
+
+        out = output['data']['generated_text']
+        if '### Response:' in out:
+            out = out.split('### Response:')[1]
+        return out.strip()
+
         # hf_generator = pipeline('text-generation', model='huggyllama/llama-65b', device=0)  <-- didn't work
         # hf_generator = pipeline('text-generation', model='vicgalle/gpt2-alpaca-gpt4', device=0)  <-- buggy
         # hf_generator = pipeline('text-generation', model='lmsys/vicuna-13b-delta-v1.1', device=1)  <-- download killed
         # hf_generator = pipeline('text-generation', model='EleutherAI/gpt-neo-1.3B', device=0)
-        hf_generator = pipeline(model="declare-lab/flan-alpaca-gpt4-xl", device=0)
-        output = hf_generator(prompt, max_length=len(prompt)+128, do_sample=True)
-        out = output[0]['generated_text']
-        if '### Response:' in out:
-            out = out.split('### Response:')[1]
-        if '### Instruction:' in out:
-            out = out.split('### Instruction:')[0]
-        return out.strip()
-
+        # hf_generator = pipeline(model="declare-lab/flan-alpaca-gpt4-xl", device=0)
+        # output = hf_generator(prompt, max_length=len(prompt)+128, do_sample=True)
+        
+        # out = output[0]['generated_text']
+        # if '### Response:' in out:
+        #     out = out.split('### Response:')[1]
+        # # if '### Instruction:' in out:
+        # #     out = out.split('### Instruction:')[0]
+        # return out.strip()
 
 def get_rating(x):
     """
