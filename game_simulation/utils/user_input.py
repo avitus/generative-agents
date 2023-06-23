@@ -6,9 +6,9 @@ def inspire_agent(agents):
     for index, agent in enumerate(agents):
         print(f"{index}: {agent.name}")
 
-    # Who needs inspiration. Allow 5 seconds for a selection
+    # Who needs inspiration? Allow 4 seconds for a selection
     try:
-        agent = inputimeout(prompt='Who do you want to inspire? : ', timeout=5)
+        agent = inputimeout(prompt='Who do you want to inspire? : ', timeout=4)
     except TimeoutOccurred:
         return None
 
