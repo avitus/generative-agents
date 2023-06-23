@@ -32,7 +32,7 @@ print_plans = True
 print_ratings = True
 print_memories = True
 
-use_openai = True 
+use_openai = False 
 
 # Start simulation loop
 whole_simulation_output = ""
@@ -102,7 +102,7 @@ for game_hour in range(global_time, global_time+hours_of_simulation):
         for other_agent in agents:
             if other_agent != agent:
 
-                # other_agent.form_sort_term_memory(global_day, global_time, agent, action )
+                # other_agent.form_short_term_memory(global_day, global_time, agent, action )
                 # other_agent.diary_entry("Memory", global_day, global_time, agent, action )
 
                 memory = f'[Time: {global_time}. Person: {agent.name}. Memory: {action}]'
